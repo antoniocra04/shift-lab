@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { store } from '../store';
 
-export const HOST = '';
+export const HOST = 'https://shift-backend.onrender.com';
 export const BACKEND_URL = `${HOST}`;
 
 export const axiosClient = axios.create({

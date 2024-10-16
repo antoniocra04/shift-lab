@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useCreateOtpCode } from '@/hooks/useCreateOtpCode';
+import { useSignIn } from '@/hooks/useSignIn';
 import { useTimer } from '@/hooks/useTimer';
 import { formatPhone, validatePhone } from '@/utils/phoneUtils';
 
@@ -13,11 +15,15 @@ export const LoginPage = () => {
   const [error, setError] = useState<string>('');
   const [timer, setTimer] = useTimer(0);
 
+  const createOtpCode = useCreateOtpCode();
+  const signIn = useSignIn();
+
   const handleContinue = () => {
     if (validatePhone(phone)) {
       setError('');
       setShowCodeInput(true);
       setTimer(3);
+      createOtpCode.mutate(phone);
     } else {
       setError('Пожалуйста, введите корректный номер телефона');
     }
@@ -27,7 +33,9 @@ export const LoginPage = () => {
     e.preventDefault();
     if (!/^\d{6}$/.test(code)) {
       setError('Пожалуйста, введите корректный проверочный код из 6 цифр');
+      return;
     }
+    signIn.mutate({ phone, code: parseInt(code, 10) });
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +44,8 @@ export const LoginPage = () => {
   };
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCode(e.target.value);
+    const value = e.target.value.replace(/\D/g, '');
+    setCode(value);
     if (error) setError('');
   };
 

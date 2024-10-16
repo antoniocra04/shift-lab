@@ -2,7 +2,7 @@
 
 export const validatePhone = (phoneNumber: string): boolean => {
   const digitsOnly = phoneNumber.replace(/\D/g, '');
-  return /^7\d{10}$/.test(digitsOnly);
+  return /\d{11}$/.test(digitsOnly);
 };
 
 export const formatPhone = (phoneNumber: string): string => {
